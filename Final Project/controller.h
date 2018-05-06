@@ -17,5 +17,14 @@ void poll_key_release(uint8_t key);
 #define CTRL_DAT_PIN 2
 #define CTRL_DAT_PORT GPIOA
 
+#define KEY_A 0x80
+#define KEY_B 0x40
+#define KEY_START 0x10
+#define KEY_SELECT 0x20
+#define KEY_UP 0x8
+#define KEY_DOWN 0x4
+#define KEY_LEFT 0x2
+#define KEY_RIGHT 0x1
+
 
 
