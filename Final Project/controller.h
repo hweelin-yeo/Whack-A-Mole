@@ -2,6 +2,7 @@
 
 uint8_t controller_read(void);
 void controller_init(void);
+void controller_init_beta(void);
 void poll_key(uint8_t key);
 void poll_key_release(uint8_t key);
 
