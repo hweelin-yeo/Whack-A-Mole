@@ -40,17 +40,28 @@ void PIT1_IRQHandler(void) {
 }
 
 void controller_init_beta(void) {
-	//PTC6, PTA4
-	PIT_init();
+	//PTC6, PTA4 as SW2 and SW3
 	
 	SIM->SCGC5 |= (1<<11); // Enable clock to Port C
 	SIM->SCGC5 |= (1<<9); // Enable clock to Port A
-	
-	// Alternative: SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK | SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTD_MASK;    //Set up peripheral clock for GPIO A,B,D  
-  
-	PORTA->PCR[1] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTA1 as GPIO, Pull Up, interrupt on falling edge  
+	  
+	PORTA->PCR[4] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTA1 as GPIO, Pull Up, interrupt on falling edge  
   PORTC->PCR[6] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTD4 as GPIO, Pull up, interrupt on falling edge  
+	
+	PTA->PDDR &= ~(1<<4);
+	PTC->PDDR &= ~(1<<6);
+	
+	NVIC_EnableIRQ(PORTC_IRQn); /*Enable the PORTC interrupt*/
+	NVIC_EnableIRQ(PORTA_IRQn);
+	NVIC_SetPriority(PORTC_IRQn, 1);
+	NVIC_SetPriority(PORTA_IRQn, 1);
+	while(1)
+    {
+    }
+		
+	// Alternative: SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK | SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTD_MASK;    //Set up peripheral clock for GPIO A,B,D  
 
+	
 	// Alternative: PORTA->PCR[4] |= PORT_PCR_MUX(001); //Set up PTA4 as GPIO
 //	PORTC->PCR[6] |= PORT_PCR_MUX(001); //Set up PTC6 as GPIO
 //	
@@ -62,9 +73,6 @@ void controller_init_beta(void) {
 //	
 //	PORTC -> PCR[6] &= ~0xF0000; // clear interrupt selection
 //	PORTC -> PCR[6] |= 0xA0000; //  0xB0000 // enable falling edge interrupt
-
-	PTA->PDDR &= ~(1<<4);
-	PTC->PDDR &= ~(1<<6);
 	 
 	// NVIC->ISER[0] |= 0x40000000;    /* enable INT30 (bit 30 of ISER[0]) */
 	// 
@@ -78,33 +86,27 @@ void controller_init_beta(void) {
 //    EnableIRQ(BOARD_SW_IRQ);
 //    GPIO_PinInit(BOARD_SW_GPIO, BOARD_SW_GPIO_PIN, &sw_config);
 	
-	NVIC_EnableIRQ(PORTC_IRQn); /*Enable the PORTC interrupt*/
-	NVIC_EnableIRQ(PORTA_IRQn);
-	NVIC_SetPriority(PORTC_IRQn, 1);
-	NVIC_SetPriority(PORTC_IRQn, 2);
-	while(1)
-    {
-    }
 }
 
 void PORTA_IRQHandler(void)
 { 
-	__disable_irq();
-	PORTA ->ISFR  = 0x04;
+	// __disable_irq();
+	PORTA ->ISFR  = (1 << 4);
 	LEDGreen_On();
 	i++;
-	__enable_irq();
+	// __enable_irq();
 	
 }
 
 void PORTC_IRQHandler(void)
 { 
-	__disable_irq();
-	PORTC ->ISFR  = 0x06;
+	// __disable_irq();
+	PORTC ->ISFR  = (1 << 6);
 	LEDBlue_On();
 	i++;
-	__enable_irq();
+	// __enable_irq();
 }
+
 
 void controller_init(void){
 	SIM->SCGC5 |= (1<<11); // Enable clock to Port C
@@ -182,5 +184,16 @@ int poll_2k_release(uint8_t key1, uint8_t key2){
 
 int main(void) {
 	LED_Initialize();
+	init_delay();
 	controller_init_beta();
+//	while (1) {
+//		CTRL_LAT_LOW();
+//		CTRL_CLK_LOW();
+//	
+//		CTRL_LAT_HIGH();
+//		delay_us(2);
+//		CTRL_LAT_LOW();
+//	
+//		int res = DATA_READ();
+//	}
 }

@@ -381,9 +381,34 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>Framework.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\Framework.s</FilePath>
+              <FileName>controller.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Final Project\controller.h</FilePath>
+            </File>
+            <File>
+              <FileName>utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Final Project\utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>utils.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Final Project\utils.h</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Final Project\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Final Project\delay.h</FilePath>
+            </File>
+            <File>
+              <FileName>controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Final Project\controller.c</FilePath>
             </File>
           </Files>
         </Group>
