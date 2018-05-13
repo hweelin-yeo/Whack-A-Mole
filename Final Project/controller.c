@@ -31,13 +31,13 @@ void PIT_init() {
 	
 }
 
-void PIT1_IRQHandler(void) {
-	// int dat = DATA_READ();
-	NVIC_DisableIRQ(PIT1_IRQn);
-	PIT -> CHANNEL[1].TFLG |= 0x1;
-	NVIC_EnableIRQ(PIT1_IRQn);
-	
-}
+//void PIT1_IRQHandler(void) {
+//	// int dat = DATA_READ();
+//	NVIC_DisableIRQ(PIT1_IRQn);
+//	PIT -> CHANNEL[1].TFLG |= 0x1;
+//	NVIC_EnableIRQ(PIT1_IRQn);
+//	
+//}
 
 void controller_init_beta(void) {
 	//PTC6, PTA4 as SW2 and SW3
@@ -55,9 +55,6 @@ void controller_init_beta(void) {
 	NVIC_EnableIRQ(PORTA_IRQn);
 	NVIC_SetPriority(PORTC_IRQn, 1);
 	NVIC_SetPriority(PORTA_IRQn, 1);
-	while(1)
-    {
-    }
 		
 	// Alternative: SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK | SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTD_MASK;    //Set up peripheral clock for GPIO A,B,D  
 
@@ -88,24 +85,6 @@ void controller_init_beta(void) {
 	
 }
 
-void PORTA_IRQHandler(void)
-{ 
-	// __disable_irq();
-	PORTA ->ISFR  = (1 << 4);
-	LEDGreen_On();
-	i++;
-	// __enable_irq();
-	
-}
-
-void PORTC_IRQHandler(void)
-{ 
-	// __disable_irq();
-	PORTC ->ISFR  = (1 << 6);
-	LEDBlue_On();
-	i++;
-	// __enable_irq();
-}
 
 
 void controller_init(void){
@@ -180,20 +159,4 @@ int poll_2k_release(uint8_t key1, uint8_t key2){
 		if ((d_prev == key2) && (d != d_prev)) {return 2;}
 		d_prev = d;
 	}
-}
-
-int main(void) {
-	LED_Initialize();
-	init_delay();
-	controller_init_beta();
-//	while (1) {
-//		CTRL_LAT_LOW();
-//		CTRL_CLK_LOW();
-//	
-//		CTRL_LAT_HIGH();
-//		delay_us(2);
-//		CTRL_LAT_LOW();
-//	
-//		int res = DATA_READ();
-//	}
 }
