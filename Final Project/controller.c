@@ -160,3 +160,8 @@ int poll_2k_release(uint8_t key1, uint8_t key2){
 		d_prev = d;
 	}
 }
+
+//int main() {
+//	LED_Initialize();
+//	controller_init_beta();
+//}
