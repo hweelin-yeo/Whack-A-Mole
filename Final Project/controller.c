@@ -1,5 +1,6 @@
 #include "controller.h"
 #include "MK64F12.h"
+#include "delay.h"
 #include "utils.h"
 int i = 0;
 
@@ -27,7 +28,7 @@ void PIT_init() {
 	PIT -> CHANNEL[1].TCTRL = 0x3;
 	// NVIC_EnableIRQ(PIT1_IRQn); // Enable interrupt handler
 	// NVIC_SetPriority(PIT1_IRQn, 3);
-
+	
 }
 
 //void PIT1_IRQHandler(void) {
@@ -35,53 +36,53 @@ void PIT_init() {
 //	NVIC_DisableIRQ(PIT1_IRQn);
 //	PIT -> CHANNEL[1].TFLG |= 0x1;
 //	NVIC_EnableIRQ(PIT1_IRQn);
-//
+//	
 //}
 
 void controller_init_beta(void) {
 	//PTC6, PTA4 as SW2 and SW3
-
+	
 	SIM->SCGC5 |= (1<<11); // Enable clock to Port C
 	SIM->SCGC5 |= (1<<9); // Enable clock to Port A
-
-	PORTA->PCR[4] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTA1 as GPIO, Pull Up, interrupt on falling edge
-  PORTC->PCR[6] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTD4 as GPIO, Pull up, interrupt on falling edge
-
+	  
+	PORTA->PCR[4] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTA1 as GPIO, Pull Up, interrupt on falling edge  
+  PORTC->PCR[6] |= PORT_PCR_MUX(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1) | PORT_PCR_IRQC(0x0A);//PTD4 as GPIO, Pull up, interrupt on falling edge  
+	
 	PTA->PDDR &= ~(1<<4);
 	PTC->PDDR &= ~(1<<6);
-
+	
 	NVIC_EnableIRQ(PORTC_IRQn); /*Enable the PORTC interrupt*/
 	NVIC_EnableIRQ(PORTA_IRQn);
 	NVIC_SetPriority(PORTC_IRQn, 1);
 	NVIC_SetPriority(PORTA_IRQn, 1);
+		
+	// Alternative: SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK | SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTD_MASK;    //Set up peripheral clock for GPIO A,B,D  
 
-	// Alternative: SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK | SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTD_MASK;    //Set up peripheral clock for GPIO A,B,D
-
-
+	
 	// Alternative: PORTA->PCR[4] |= PORT_PCR_MUX(001); //Set up PTA4 as GPIO
 //	PORTC->PCR[6] |= PORT_PCR_MUX(001); //Set up PTC6 as GPIO
-//
+//	
 //	PORTA -> PCR[4] |= 0x00003; // enable pullup
 //	PORTC -> PCR[6] |= 0x00003; // enable pullup
-
+	
 //	PORTA -> PCR[4] &= ~0xF0000; // clear interrupt selection
 //	PORTA -> PCR[4] |= 0xA0000; // enable falling edge interrupt
-//
+//	
 //	PORTC -> PCR[6] &= ~0xF0000; // clear interrupt selection
 //	PORTC -> PCR[6] |= 0xA0000; //  0xB0000 // enable falling edge interrupt
-
+	 
 	// NVIC->ISER[0] |= 0x40000000;    /* enable INT30 (bit 30 of ISER[0]) */
-	//
-
+	// 
+	
 	// PORTC -> ISFR  = PORT_ISFR_ISF(0x40); /* Clear interrupt status flag */
 	// PORTA -> ISFR = PORT_ISFR_ISF(0x10);
 	/* Init input switch GPIO. */
-
-
+	
+	
 //    PORT_SetPinInterruptConfig(BOARD_SW_PORT, BOARD_SW_GPIO_PIN, kPORT_InterruptFallingEdge);
 //    EnableIRQ(BOARD_SW_IRQ);
 //    GPIO_PinInit(BOARD_SW_GPIO, BOARD_SW_GPIO_PIN, &sw_config);
-
+	
 }
 
 
@@ -89,14 +90,14 @@ void controller_init_beta(void) {
 void controller_init(void){
 	SIM->SCGC5 |= (1<<11); // Enable clock to Port C
 	SIM->SCGC5 |= (1<<9); // Enable clock to Port A
-
+	
 	PORTC->PCR[CTRL_CLK_PIN] = PORT_PCR_MUX(001); // set pins as GPIO
 	PORTC->PCR[CTRL_LAT_PIN] = PORT_PCR_MUX(001);
 	PORTA->PCR[CTRL_DAT_PIN] = PORT_PCR_MUX(001);
 
-	PTC->PDDR |= (1<<CTRL_CLK_PIN) | (1<<CTRL_LAT_PIN);
+	PTC->PDDR |= (1<<CTRL_CLK_PIN) | (1<<CTRL_LAT_PIN); 
 	PTA->PDDR &= ~(1<<CTRL_DAT_PIN);
-
+	
 	CTRL_CLK_HIGH();
 	CTRL_LAT_HIGH();
 }
@@ -110,16 +111,16 @@ int DATA_READ(void){
 uint8_t controller_read(void){
 	uint8_t res = 0;
 	int i = 0;
-
+	
 	CTRL_LAT_LOW();
 	CTRL_CLK_LOW();
-
+	
 	CTRL_LAT_HIGH();
 	delay_us(2);
 	CTRL_LAT_LOW();
-
+	
 	res = DATA_READ();
-
+	
 	for(i = 1;i <= 2; i++)
   {
 		CTRL_CLK_HIGH();
@@ -129,7 +130,7 @@ uint8_t controller_read(void){
 		delay_us(4);
 		CTRL_CLK_LOW();
   }
-
+	
 	return ~res;
 
 }
