@@ -143,7 +143,7 @@ void evaluateAnswer() {
 		score--;
 		
 		int delay = 0;
-		while (delay < 1000) {
+		while (delay < 999999) {
 			delay++; 
 		}
 		LED_Off();
@@ -153,7 +153,7 @@ void evaluateAnswer() {
 		score++;
 		
 		int delay = 0;
-		while (delay < 1000) {
+		while (delay < 999999) {
 			delay++; 
 		}
 		LED_Off();
