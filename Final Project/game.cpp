@@ -1,3 +1,5 @@
+#include "mbed.h"
+#include "RGBmatrixPanel.h" // Hardware-specific library
 #include "game.h"
 
 int game_state = 0;
@@ -6,6 +8,27 @@ int score = 0;
 int answer_key = 0;
 int key_pressed = 0;
 uint8_t controller_input = 0;
+
+
+PinName ub1=PTB9;
+PinName ug1=PTA1;
+PinName ur1=PTB23;
+PinName lb2=PTA2;
+PinName lg2=PTC2;
+PinName lr2=PTC3;
+RGBmatrixPanel matrix(ur1,ug1,ub1,lr2,lg2,lb2,PTB2,PTB3,PTB10,PTC12,PTB11,PTC4,false);
+//RGBmatrixPanel(r1, g1, b1, r2, g2, b2, a, b, c, sclk, latch, oe, enable double_buffer);
+
+void delay(int x){
+    //Written with the help of Michael Xiao
+    int i=0;
+    while(i<x){
+        wait_us(10);
+        matrix.updateDisplay();
+        i++;
+    }
+}
+
 
 void game_init(void){
 	LED_Initialize();
@@ -59,6 +82,15 @@ void game_update_beta(void) {
 	// draw moles
 	key_pressed = 0;
 	answer_key = draw_moles(); // draw moles function updates display, and also returns key
+  if (answer_key == KEY_LEFT){
+    matrix.drawCircle(20, 7, 7, matrix.Color333(1, 1, 1));
+    delay(1000);
+    matrix.drawCircle(7, 7, 7, matrix.Color333(0, 0, 0));
+  } else {
+    matrix.drawCircle(7, 7, 7, matrix.Color333(0, 0, 7));
+    delay(1000);
+    matrix.drawCircle(20, 7, 7, matrix.Color333(0, 0, 0));
+  }
 
 	// poll for x seconds for the right key
 	int time = 0;
