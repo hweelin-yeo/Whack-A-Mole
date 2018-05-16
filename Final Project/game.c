@@ -1,6 +1,8 @@
 #include "game.h"
+// TODO1: IMPLEMENT GAME END
+// TODO2: Test cases for games, controller
 
-int game_state = 0;
+int game_state = 0; 
 int game_end = 0;
 int score = 0;
 int answer_key = 0;
@@ -11,7 +13,7 @@ void game_init(void){
 	LED_Initialize();
 //	init_delay();
 	controller_init_beta();
-
+	
 	game_state = GAME_INIT;
 	game_run();
 }
@@ -53,26 +55,24 @@ int draw_moles (void) {
 	int key = (pos == 0) ? KEY_LEFT : KEY_RIGHT;
 	return key;
 }
-
-//TODO: Stephanie
 void game_update_beta(void) {
 	// draw moles
 	key_pressed = 0;
 	answer_key = draw_moles(); // draw moles function updates display, and also returns key
-
+	
 	// poll for x seconds for the right key
 	int time = 0;
-
+	
 	while (key_pressed == 0 && time < 999) {
 		time++; // wait
 	}
-
+	
 	int delay = 0;
 	while (delay < 1000) {
-		delay++;
+		delay++; 
 	}
-
-
+	
+	
 }
 void game_update(void){
 	// draw moles?
@@ -81,8 +81,8 @@ void game_update(void){
 	static int hit_a = 0;
 	static int hit_b = 0;
 	// controller_input = controller_read();
-	//
-
+	// 
+	
 	// basically, at each update cycle, do garbage collection and display
 	// the movement of block is implement in the timer interrupt
 	if ((controller_input != controller_prev)){
@@ -114,11 +114,11 @@ void game_update(void){
 	}
 	if (hit_a){
 		// if ((blocktmpbuf[2] >> 14) & 3) health += 2; else if ((blocktmpbuf[2] >> 12) & 3) health += 1;
-	}
+	} 
 	if (hit_b){
 		//if ((blocktmpbuf[5] >> 14) & 3) health += 2; else if ((blocktmpbuf[5] >> 12) & 3) health += 1;
 	}
-
+	
 //	if (health > 16) health = 16;
 //	write_to_buf(keybuf, db);
 //	write_to_buf(blocktmpbuf, db);
@@ -143,43 +143,43 @@ void evaluateAnswer() {
 	if (key_pressed != answer_key) {
 		LEDRed_On();
 		score--;
-
+		
 		int delay = 0;
 		while (delay < 999999) {
-			delay++;
+			delay++; 
 		}
 		LED_Off();
-
+			
 	} else {
 		LEDGreen_On();
 		score++;
-
+		
 		int delay = 0;
 		while (delay < 999999) {
-			delay++;
+			delay++; 
 		}
 		LED_Off();
 	}
 }
 void PORTA_IRQHandler(void)
-{
+{ 
 	__disable_irq();
 	PORTA ->ISFR  = (1 << 4);
 	key_pressed = KEY_RIGHT;
 	evaluateAnswer();
 	// LEDGreen_On();
 	__enable_irq();
-
+	
 }
 
 void PORTC_IRQHandler(void)
-{
+{ 
 	__disable_irq();
 	NVIC_DisableIRQ(PIT1_IRQn);
 	PORTC ->ISFR  = (1 << 6);
 	key_pressed = KEY_LEFT;
 	evaluateAnswer();
-
+	
 	//	LEDRed_On();
 	__enable_irq();
 	NVIC_EnableIRQ(PIT1_IRQn);
