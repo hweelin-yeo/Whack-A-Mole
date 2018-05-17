@@ -120,7 +120,7 @@ void clr_draw_score(int x){
 int main() {
 	// moles
 	draw_smallmole(0, 0);
-	wait_us(100);
+	wait_us(5000000);
 	clr_smallmole(0, 0);
 
 	// numbers
