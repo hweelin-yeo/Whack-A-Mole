@@ -127,7 +127,7 @@ int main() {
 	int counter = 0;
 	while (counter < 10) {
 		draw_score(counter);
-		wait_us(100);
+		wait_us(5000000);
 		clr_draw_score(counter);
 		counter++;
 	}
