@@ -38,6 +38,19 @@ void matrix_delay(int x){
     }
 }
 
+void simple_draw() {
+	matrix.drawCircle(4, 4, 3, matrix.Color333(165,42,42));
+}
+
+void simple_clr_draw() {
+	matrix.drawCircle(4, 4, 3, matrix.Color333(0, 0, 0));
+}
+
+void simple_test() {
+	simple_draw();
+}
+
+
 void draw_smallmole(int x, int y){
 	matrix.drawRect(x+1, y+1, 7, 7, matrix.Color333(0, 0, 50));
 	//Face
@@ -117,7 +130,7 @@ void clr_draw_score(int x){
     	}
 }
 
-int main() {
+void harder_test() {
 	// moles
 	draw_smallmole(0, 0);
 	wait_us(5000000);
@@ -131,5 +144,10 @@ int main() {
 		clr_draw_score(counter);
 		counter++;
 	}
+}
+
+int main() {
+	// simple_test();
+	harder_test();
 
 }
